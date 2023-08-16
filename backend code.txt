@@ -1,0 +1,333 @@
+const oracledb = require("oracledb");
+
+
+oracledb.initOracleClient();
+//get function method
+/*async function run() {
+      let connection;
+      let a=[];
+
+      // Get the TNS service name from the $SVC_NAME environment variable
+      //const svcName = process.env.SVC_NAME;
+
+      try {
+            connection = await oracledb.getConnection({
+                  user: "testuser",
+                  password: "test",
+                  connectionString:"localhost:1521/ORCL",
+            });
+
+            console.log("\nnode-oracledb driver version is " + oracledb.versionString);
+
+            console.log("\nOracle client version is " + oracledb.oracleClientVersionString + "\n");
+
+            result = await connection.execute(
+                  "select * from trial",
+                  [], {
+                  resultSet: true,
+                  outFormat: oracledb.OUT_FORMAT_OBJECT
+                  }
+            );
+            console.log('result:',result);
+
+            rs = result.resultSet;
+
+            let row;
+            while ((row = await rs.getRow())) {
+                  console.log(row);
+                a.push(row)
+            }
+            console.log("",a);
+            await rs.close();
+
+            return a ;
+
+           
+
+
+           
+
+      } catch (err) {
+
+            console.error(err);
+
+      } finally {
+
+            if (connection) {
+                  try {
+                  await connection.close();
+                  } catch (err) {
+                  console.error(err);
+                  }
+            }
+
+          console.log("\nBye");
+      }
+}
+
+module.exports={run};
+//module.exports.run=run;
+
+//post function method*/
+
+async function run(value) {
+      console.log("prin");
+      console.log(value.username,value.password);
+      let connection;
+      
+
+      // Get the TNS service name from the $SVC_NAME environment variable
+      //const svcName = process.env.SVC_NAME;
+
+      try {
+            connection = await oracledb.getConnection({
+                  user: "testuser",
+                  password: "test",
+                  connectionString:"localhost:1521/ORCL",
+            });
+
+            console.log("\nnode-oracledb driver version is " + oracledb.versionString);
+
+            console.log("\nOracle client version is " + oracledb.oracleClientVersionString + "\n");
+
+            result = await connection.execute(
+                  "insert into trial (ID,NAME)values(:ID, :NAME)",
+                 
+                  [value.username,value.password], {
+                
+                  autoCommit: true,
+                
+                  }
+            );
+
+            console.log(result);
+       
+
+
+
+           
+
+
+           
+
+      } catch (err) {
+
+            console.error(err);
+
+      } finally {
+
+            if (connection) {
+                  try {
+                  await connection.close();x
+                  } catch (err) {
+                  console.error(err);
+                  }
+            }
+
+          console.log("\nBye");
+      }
+}
+
+module.exports={run};
+//module.exports.run=run;
+//SELECTING STATEMENTS WHEN CONDITION IS GIVEN
+//"select * from trail where = :ID;"
+//[value.ID], { */                             
+//use only one parameter if one is required
+
+
+db connect.js
+const oracledb = require("oracledb");
+exports.connect=async  function connect()
+
+{
+    let connection;
+    
+    try {
+        connection = await oracledb.getConnection({
+              user: "project",
+              password: "project",
+              connectionString:"localhost:1521/ORCL",
+        });
+
+        console.log("\nnode-oracledb driver version is " + oracledb.versionString);
+
+        console.log("\nOracle client version is " + oracledb.oracleClientVersionString + "\n");
+
+    }
+catch (err) {
+
+    console.error(err);
+
+}
+
+  console.log("\nBye");
+
+return connection;
+}
+
+//module.exports={connect};
+
+
+nodejs connect source code
+var express=require('express');
+//const oracledb = require("oracledb");
+var app=express()
+var cor=require('cors');
+var dbData=require('./test');
+var sup=require('./test_Service');
+app.use(express.json());
+app.use(cor());
+
+app.post('/post',(req,res)=>{
+    oracledb.initOracleClient();
+  dbData.post(req.body)
+    console.log('request body:  ',req.body);
+    res.send(req.body)
+    
+})
+
+app.get('/get',async (req,res)=>{
+    oracledb.initOracleClient();
+    console.log('get');
+    await dbData.get().then(row =>{
+        console.log("Data : ",[row]);
+        res.json([row])
+    })
+    
+
+})
+app.post('/postSupplier',(req,res)=>{
+    oracledb.initOracleClient();
+    sup.post(req.body)
+      console.log('request body:  ',req.body);
+      res.send(req.body)
+      
+  })
+  app.get('/getSupplier',async (req,res)=>{
+    oracledb.initOracleClient();
+    console.log('get');
+    await sup.get().then(row =>{
+        console.log("Data : ",[row]);
+        res.json([row])
+    })
+    
+
+})
+
+app.listen(4000,()=>{
+    console.log('port is open');
+})
+
+
+indvidual files code
+const oracledb = require("oracledb");
+const dbcon =   require('./db_connect')
+console.log("db ini item");
+oracledb.initOracleClient();
+//get function method
+exports.get=async function get() {
+      
+      let a=[];
+
+      // Get the TNS service name from the $SVC_NAME environment variable
+      //const svcName = process.env.SVC_NAME;
+      let connection;
+      try {
+            
+
+            connection=await dbcon.connect();
+
+            result = await connection.execute(
+                  "select * from ITEM",
+                  [], {
+                  resultSet: true,
+                  outFormat: oracledb.OUT_FORMAT_OBJECT
+                  }
+            );
+            console.log('result:',result);
+
+            rs = result.resultSet;
+
+            let row;
+            while ((row = await rs.getRow())) {
+                  console.log(row);
+                a.push(row)
+            }
+            console.log("",a);
+            await rs.close();
+
+            return a ;
+      } catch (err) {
+
+            console.error(err);
+      }
+       finally {
+
+    if (connection) {
+          try {
+          await connection.close();
+          } catch (err) {
+          console.error(err);
+          }
+    }
+}
+}
+
+//module.exports={get};
+//module.exports.run=run;
+
+//post function method*/
+
+exports.post=async function post(value) {
+      console.log("print");
+     // console.log(value.username,value.password);
+     var mydate = new Date(value.CREATE_DATETIME+'T00:00:00.000Z');
+    var mydate1=  new Date(value.LAST_UPDATE_DATETIME+'T00:00:00.000Z');
+    //console.log( "the value is",mydate,value.CREATE_DATETIME);
+      
+
+      // Get the TNS service name from the $SVC_NAME environment variable
+      //const svcName = process.env.SVC_NAME;
+
+      try {
+            
+
+            
+            connection= await dbcon.connect();
+            result = await connection.execute(
+                 // "insert into ITEM (ID,NAME)values(:ID, :NAME)",
+                  "insert into ITEM (ITEM , STATUS ,  ITEM_DESCRIPTION, COST_ZONE_GROUP_ID ,  STANDARD_UOM,MERCHANDISE_IND,FORECAST_IND,SELLABLE_IND ,ORDERABLE_IND ,COMMENTS ,INVENTORY_IND ,PERISHABLE_IND,CURR_SELLING_UNIT_RETAIL ,CREATE_ID  , CREATE_DATETIME  ,  LAST_UPDATE_ID ,LAST_UPDATE_DATETIME )  values(:ITEM , :STATUS ,  :ITEM_DESCRIPTION, :COST_ZONE_GROUP_ID ,  :STANDARD_UOM,:MERCHANDISE_IND,:FORECAST_IND,:SELLABLE_IND ,:ORDERABLE_IND ,:COMMENTS ,:INVENTORY_IND ,:PERISHABLE_IND,:CURR_SELLING_UNIT_RETAIL ,:CREATE_ID  , :CREATE_DATETIME,  :LAST_UPDATE_ID , :LAST_UPDATE_DATETIME)",
+                  [value.ITEM , value.STATUS ,  value.ITEM_DESCRIPTION, value.COST_ZONE_GROUP_ID ,  value.STANDARD_UOM,value.MERCHANDISE_IND,value.FORECAST_IND,value.SELLABLE_IND ,value.ORDERABLE_IND ,value.COMMENTS ,value.INVENTORY_IND ,value.PERISHABLE_IND,value.CURR_SELLING_UNIT_RETAIL ,value.CREATE_ID  , mydate ,  value.LAST_UPDATE_ID ,mydate1],{
+                 // [value.username,value.password], {
+                
+                 autoCommit: true,
+                
+                  }
+            );
+
+            console.log(result);
+      } catch (err) {
+
+            console.error(err);
+
+      } 
+       finally {
+
+    if (connection) {
+          try {
+          await connection.close();
+          } catch (err) {
+          console.error(err);
+          }
+    }
+}
+}
+
+//module.exports={post};
+//module.exports.run=run;
+//SELECTING STATEMENTS WHEN CONDITION IS GIVEN
+//"select * from trail where = :ID;"
+//[value.ID], { */                             
+//use only one parameter if one is required
+
